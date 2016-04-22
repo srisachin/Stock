@@ -28,11 +28,7 @@ import com.sachin.model.Stock;
 public class HomeController {
 	@Autowired
 	private StockDaoImpl stockDao;
-
 	
-/*	public HomeController(StockDaoImpl dao){
-	    this.dao = dao;
-	}*/
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -43,27 +39,22 @@ public class HomeController {
 	@RequestMapping(value = "/stocklist/{id}", method = RequestMethod.GET)
 	public @ResponseBody ArrayList<Stock> stockList(@PathVariable("id") String id, Locale locale, Model model) {	
 		ArrayList<Stock> al = new ArrayList<Stock>();
-		StockDaoImpl s = new StockDaoImpl();
-		al=s.listValues(id);
-//		System.out.println("reached here");
+		al=stockDao.listValues(id);
 		model.addAttribute("al", al );		
 		return al;
 	}
 	
 	@RequestMapping(value = "/stocknames", method = RequestMethod.GET)
 	public @ResponseBody ArrayList<String> stockNames(Locale locale, Model model) {	
-		ArrayList<String> al = new ArrayList<String>();
-		StockDaoImpl s = new StockDaoImpl();
-		al=s.listNames();		
+		ArrayList<String> al = new ArrayList<String>();		
+		al=stockDao.listNames();		
 		model.addAttribute("al", al );		
 		return al;
 	}
 	
 	@RequestMapping(value = "/stockcurrent/{id}", method = RequestMethod.GET)
 	public @ResponseBody Stock stockCurrent(@PathVariable("id") String id, Locale locale, Model model) {	
-		StockDaoImpl si = new StockDaoImpl();
-		//al=s.listCurrent(id);
-		Stock s=si.listCurrent(id);
+		Stock s=stockDao.listCurrent(id);
 		System.out.println("reached here");
 		model.addAttribute("s", s );		
 		return s;
@@ -76,5 +67,4 @@ public class HomeController {
 		model.addAttribute("s", s );		
 		return s;
 	}
-
 }

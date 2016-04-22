@@ -17,20 +17,25 @@ import com.sachin.model.Stock;
 
 @Repository("stockDao")
 public class StockDaoImpl implements StockDao {	
-	
-	
-	@Override
-	public ArrayList<Stock> listValues(String id) {
-		// TODO Auto-generated method stub
-		System.out.println(id);
-		ArrayList<Stock> al = new ArrayList<Stock>();
-		Connection con = null;
-		try {
+	Connection con = null;
+	public StockDaoImpl()
+	{
+ 		try {
             Class.forName("org.postgresql.Driver");
             con = DriverManager
                .getConnection("jdbc:postgresql://localhost:5432/webapp",
-               "postgres", "sachin");             
-            Statement stmt = con.createStatement();
+               "postgres", "sachin");                         
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+	}
+	@Override
+	public ArrayList<Stock> listValues(String id) {
+		System.out.println(id);
+		ArrayList<Stock> al = new ArrayList<Stock>();
+		
+		try {
+			Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT * FROM \"public\".\"Historical\" where \"Name\"=\'" + id +"\' limit 100;" );
             while ( rs.next() ) {                
                 String  name = rs.getString("Name");
@@ -42,34 +47,19 @@ public class StockDaoImpl implements StockDao {
                 String  date = rs.getString("Date");
                 Stock s = new Stock(name,open,high,low,close,vol,date);
                 al.add(s);                
-//                System.out.println( "Name = " + name );
-                /*System.out.println( "Open = " + open );
-                System.out.println( "High = " + high );
-                System.out.println( "Low = " + low );
-                System.out.println( "Close = " + close );
-                System.out.println( "Volume = " + vol );*/
-//                System.out.println();
              }
              rs.close();
              stmt.close();
-             con.close();
          } catch (Exception e) {
             e.printStackTrace();
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
-            System.exit(0);
          }
 		return al;
 	}
 	
 	public ArrayList<String> listNames() {
 		ArrayList<String> al = new ArrayList<String>();
-		Connection con = null;
 		try {
-            Class.forName("org.postgresql.Driver");
-            con = DriverManager
-               .getConnection("jdbc:postgresql://localhost:5432/webapp",
-               "postgres", "sachin");             
-            Statement stmt = con.createStatement();
+			Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT DISTINCT \"Name\" FROM \"public\".\"Historical\";" );
             while ( rs.next() ) {                
                 String  name = rs.getString("Name");
@@ -78,43 +68,31 @@ public class StockDaoImpl implements StockDao {
              }
              rs.close();
              stmt.close();
-             con.close();
          } catch (Exception e) {
             e.printStackTrace();
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
-            System.exit(0);
          }
 		return al;
 	}
 	
 	@Override
 	public Stock listCurrent(String id) {
-		Connection con = null;
 		Stock s = null;
 		try {
-            Class.forName("org.postgresql.Driver");
-            con = DriverManager
-               .getConnection("jdbc:postgresql://localhost:5432/webapp",
-               "postgres", "sachin");             
-            Statement stmt = con.createStatement();
+			Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT * FROM \"public\".\"Historical\" where \"Name\"=\'" + id +"\' limit 1;" );
-            //while ( rs.next() ) {
-            	rs.next();
-                String  name = rs.getString("Name");
-                float open  = rs.getFloat("Open");
-                float high = rs.getFloat("High");
-                float low = rs.getFloat("Low");
-                float close = rs.getFloat("Close");
-                int vol = rs.getInt("Volume");
-                String  date = rs.getString("Date");
-                s = new Stock(name,open,high,low,close,vol,date);
-             rs.close();
-             stmt.close();
-             con.close();             
+           	rs.next();
+            String  name = rs.getString("Name");
+            float open  = rs.getFloat("Open");
+            float high = rs.getFloat("High");
+            float low = rs.getFloat("Low");
+            float close = rs.getFloat("Close");
+            int vol = rs.getInt("Volume");
+            String  date = rs.getString("Date");
+            s = new Stock(name,open,high,low,close,vol,date);
+            rs.close();
+            stmt.close();           
          } catch (Exception e) {
             e.printStackTrace();
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
-            System.exit(0);
          }
 		return s;
 	}
@@ -128,35 +106,22 @@ public class StockDaoImpl implements StockDao {
             con = DriverManager
                .getConnection("jdbc:postgresql://localhost:5432/webapp",
                "postgres", "sachin");             
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery( "SELECT * FROM \"public\".\"Historical\" where \"Name\"=\'AMZN\' order by \"High\" desc limit 1;" );            
-            //while ( rs.next() ) {
-            	rs.next();
-                String  name = rs.getString("Name");
-                float open  = rs.getFloat("Open");
-                float high = rs.getFloat("High");
-                float low = rs.getFloat("Low");
-                float close = rs.getFloat("Close");
-                int vol = rs.getInt("Volume");
-                String  date = rs.getString("Date");
-                s = new Stock(name,open,high,low,close,vol,date);                
-//                System.out.println( "Name = " + name );
-                /*System.out.println( "Open = " + open );
-                System.out.println( "High = " + high );
-                System.out.println( "Low = " + low );
-                System.out.println( "Close = " + close );
-                System.out.println( "Volume = " + vol );*/
-//                System.out.println();
-             //}
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery( "SELECT * FROM \"public\".\"Historical\" where \"Name\"=\'AMZN\' order by \"High\" desc limit 1;" );            
+             rs.next();
+             String  name = rs.getString("Name");
+             float open  = rs.getFloat("Open");
+             float high = rs.getFloat("High");
+             float low = rs.getFloat("Low");
+             float close = rs.getFloat("Close");
+             int vol = rs.getInt("Volume");
+             String  date = rs.getString("Date");
+             s = new Stock(name,open,high,low,close,vol,date);                
              rs.close();
-             stmt.close();
-             con.close();             
+             stmt.close();           
          } catch (Exception e) {
             e.printStackTrace();
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
-            System.exit(0);
          }
 		return s;
 	}
-
 }
