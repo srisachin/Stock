@@ -50,7 +50,7 @@ public class Stock {
 	public void setDate(String date) {
 		this.date = date;
 	}
-	public Stock(String name, float open, float high, float low, float close, int volume)
+	public Stock(String name, float open, float high, float low, float close, int volume,String date)
 	{
 		this.name=name;
 		this.open=open;
@@ -58,5 +58,6 @@ public class Stock {
 		this.low=low;
 		this.close=close;
 		this.volume=volume;
+		this.date=date;
 	}
 }

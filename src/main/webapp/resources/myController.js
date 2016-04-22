@@ -1,34 +1,46 @@
 var app = angular.module('myApp', ['ngRoute', 'chart.js']);
 
-app.service('myService', function() {
-	this.selected = {
-	        item: '' // I want this to return the currently selected value - If val is changed to 'B', update the text input accordingly.
-	    }
-	});
-
-app.controller('graph', ['$scope', '$http', 'myService', function($scope,$http, myService) {
+app.controller('graph', function($scope,$http, myService) {
 	$scope.mySelected = myService.selected;
 	console.log($scope.mySelected);
-	//$http.get('/myapp/stocklist/'+ $scope.mySelected).
-	$http.get('/myapp/stocklist/AMZN').
-   	success(function(data) {
-	gs = [];
-	ser = [];    
-	for( var i=0; i<data.length; i++ ) {
-	    gs.push(data[i].name);
-	    ser.push(data[i].high);
-    }
-    $scope.gs=gs;    
-    $scope.ser=[];
-    $scope.ser.push(ser);
-   	});
-}]);
+	myService.getData($scope.mySelected).then(function(response){
+		myService.cleanData(response);
+		$scope.siri=myService.siri;
+		$scope.gs=myService.gs;
+		console.log(myService.siri);
+	});
+});
 
-app.controller('select', ['$scope', '$http', 'myService', function($scope,$http, myService) {
+app.controller('select', function($scope,$http, myService) {
 	$scope.selected = myService.selected;
-	$http.get('/myapp/stocknames').
+	$scope.onChange = myService.onChange;
+	$http.get('/myapp/stocknames').	
    	success(function(data) {
    		$scope.names=data;
-   		console.log($scope.names);   		
+   		myService.names=data;   		
    	});
-}]);
+});
+
+app.controller('current', function($scope,$http, myService) {
+	$scope.getNames = function() {
+	    return myService.names;
+	}
+	$scope.$watch("getNames()", function (data) {
+		$scope.names=data;
+	});
+	$scope.onChange = function(selected){
+		$http.get('/myapp/stockcurrent/'+selected).	
+		success(function(data) {
+			$scope.price=data;
+		});
+	}
+});
+
+app.controller('google', function($scope,$http, myService) {
+	$scope.googleTop = function(selected){
+		$http.get('/myapp/stockgoogle/').	
+		success(function(data) {
+			$scope.price=data;
+		});
+	}
+});
