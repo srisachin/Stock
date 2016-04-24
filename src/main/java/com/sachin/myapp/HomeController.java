@@ -32,10 +32,11 @@ public class HomeController {
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/home", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {		
 		return "home";
 	}
+	
 	@RequestMapping(value = "/stocklist/{id}", method = RequestMethod.GET)
 	public @ResponseBody ArrayList<Stock> stockList(@PathVariable("id") String id, Locale locale, Model model) {	
 		ArrayList<Stock> al = new ArrayList<Stock>();
@@ -59,9 +60,9 @@ public class HomeController {
 		model.addAttribute("s", s );		
 		return s;
 	}
+	
 	@RequestMapping(value = "/stockgoogle/", method = RequestMethod.GET)
-	public @ResponseBody Stock stockGoogle(Locale locale, Model model) {	
-		//StockDaoImpl si = new StockDaoImpl();
+	public @ResponseBody Stock stockGoogle(Locale locale, Model model) {		
 		Stock s=stockDao.listGoogle();
 		System.out.println("reached here");
 		model.addAttribute("s", s );		
